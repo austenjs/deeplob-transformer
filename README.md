@@ -46,23 +46,23 @@ Prediction task:
 
 ### Original DeepLOB
 
-LOB Input
-→ CNN Blocks
-→ Inception Modules
-→ LSTM
+LOB Input  
+→ CNN Blocks  
+→ Inception Modules  
+→ LSTM  
 → Classification Head
 
 ### Attention DeepLOB
 
-LOB Input
-→ CNN Blocks
-→ Inception Modules
-→ Transformer Encoder
+LOB Input  
+→ CNN Blocks  
+→ Inception Modules  
+→ Transformer Encoder  
 → Classification Head
 
 ---
 
-## Results
+## Classification Results
 
 | Model | Accuracy | Precision | Recall | F1 Score |
 |---|---|---|---|---|
@@ -70,30 +70,35 @@ LOB Input
 | Feature Engineered DeepLOB | 74.53% | 72.68% | 72.21% | 72.43% |
 | Attention DeepLOB | **76.37%** | **75.03%** | 73.58% | **74.13%** |
 
-Key findings:
-- Replacing the LSTM with a Transformer encoder improved predictive accuracy.
-- Explicit imbalance features slightly degraded performance, suggesting the CNN backbone already captured liquidity imbalance implicitly.
-- Classification improvements did not directly translate into profitable trading performance under naïve execution assumptions.
-
 ---
 
 ## Trading Simulation
 
 A simplified trading simulator was implemented using model predictions as directional signals.
 
-Assumptions:
+### Assumptions
+
 - Long/short trading
 - Fixed 1-share position sizing
 - Mid-price execution
 - No transaction costs
 - No slippage
-- Confidence-threshold signal filtering
+- Confidence-threshold signal filtering (0.5)
 
-Trading metrics evaluated:
-- Sharpe ratio
-- Win rate
-- Total PnL
-- Trade frequency
+### Trading Results
+
+| Model | Trades | Win Rate | Avg Trade PnL | Total PnL | Sharpe Ratio |
+|---|---|---|---|---|---|
+| Original DeepLOB | 10,383 | 38.85% | -0.000019 | -0.198002 | -0.0039 |
+| Feature Engineered DeepLOB | 9,945 | 39.18% | **-0.000017** | **-0.171101** | **-0.0034** |
+| Attention DeepLOB | 9,991 | **40.22%** | -0.000019 | -0.188101 | -0.0038 |
+
+### Key Findings
+
+- Replacing the LSTM with a Transformer encoder improved predictive accuracy from 75.62% to 76.37%.
+- Explicit imbalance features slightly degraded classification performance, suggesting the CNN backbone already captured liquidity imbalance implicitly from raw LOB states.
+- Higher classification accuracy did not directly translate into profitable trading performance under naïve execution assumptions.
+- Confidence-threshold trading reduced overtrading but remained insufficient to overcome execution noise and market microstructure frictions.
 
 ---
 
@@ -105,6 +110,7 @@ Trading metrics evaluated:
 - Probabilistic position sizing
 - Transaction cost modeling
 - Cross-asset generalization
+- Reinforcement learning for execution optimization
 
 ---
 
